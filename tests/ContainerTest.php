@@ -87,4 +87,13 @@ class Metrodi_Tests_Container extends PHPUnit_Framework_TestCase {
 
 		$this->assertEquals(5, _get('flagb'));
 	}
+
+	/**
+	 */
+	public function test_load_object_by_classname() {
+		_didef('dummyobj', 'Metrodi_Tests_Container');
+		//must add empty array for PHPUnit constructor
+		$obj = _make('dummyobj', array());
+		$this->assertEquals( 'Metrodi_Tests_Container', get_class($obj) );
+	}
 }

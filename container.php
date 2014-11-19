@@ -122,21 +122,9 @@ class Metrodi_Container {
 		//if something is undefined, its 'file' in the thingList is set to StdClass
 		if ($file === 'StdClass') return FALSE;
 
-		$filesep = '/';
+		//try file loading only if it looks like a file
+		$className = $this->tryFileLoading($file);
 
-		$loaded = FALSE;
-		foreach ($this->searchDirs as $_dir) {
-			if(file_exists($_dir.$filesep.$file)) {
-				if(include_once($file)) {
-					$loaded = TRUE;
-					break;
-				}
-			}
-		}
-		if (!$loaded) {
-			return FALSE;
-		}
-		$className = $this->formatClassName($file);
 		if (is_array($args) && class_exists('ReflectionClass', false)) {
 			$refl = new ReflectionClass($className);
 			try {
@@ -158,6 +146,29 @@ class Metrodi_Container {
 		$this->objectCache[$cachekey] = $_x;
 //		$_x = null;
 		return TRUE;
+	}
+
+	public function tryFileLoading($file) {
+		//file is actually a class name or namespace
+		if (strrpos($file, '.') === FALSE) {
+			return $file;
+		}
+
+		$filesep = '/';
+
+		$loaded = FALSE;
+		foreach ($this->searchDirs as $_dir) {
+			if(file_exists($_dir.$filesep.$file)) {
+				if(include_once($file)) {
+					$loaded = TRUE;
+					break;
+				}
+			}
+		}
+		if (!$loaded) {
+			return FALSE;
+		}
+		return $this->formatClassName($file);
 	}
 
 	/**
