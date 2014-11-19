@@ -1,0 +1,11 @@
+{
+    "name": "metrodi",
+    "version": "3.0.0-beta1",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mark Kimsal",
+            "email": "mark.kimsal@fire-engine-red.com"
+        }
+    ],
+}
