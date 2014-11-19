@@ -57,3 +57,30 @@ Some other languages don't have the benefit of being typeless.  Using the name o
 		}
 	}
 ```
+
+
+Passing Parameters
+====================
+You can pass parameters both when defining an object and when making an object.
+
+```php
+	namespace org\my\cart\service\abstract\concrete\interface;
+	class Cart {
+		public function __construct($idUser, $listItems, $timestamp=NULL) {
+			$this->idUser    = $idUser;
+			$this->listItems = $listItems;
+			$this->timestamp = $timestamp;
+		}
+	}
+
+	_didef('shoppingCartService', '\org\my\cart\service\abstract\concrete\interface\Cart', 'A', 'B');
+	$cart1 = _make('shoppingCartService');
+	echo $cart1->idUser;     // 'A'
+	echo $cart1->listItems;  // 'B'
+	echo $cart1->timestamp;  // null
+
+	$cart2 = _make('shoppingCartService', 'C', 'D', time());
+	echo $cart2->idUser;     // 'C'
+	echo $cart2->listItems;  // 'D'
+	echo $cart2->timestamp;  // 1234567890  (YMMV)
+```
