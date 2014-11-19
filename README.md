@@ -50,10 +50,13 @@ When an object is created with \_make, the injector will inspect constructor arg
 Some other languages don't have the benefit of being typeless.  Using the name of the variable instead of the type hint (while still falling back to the type hint) allows for the most rapid prototyping and the most flexible changing of dependency implementations down the line.
 
 ```php
+	_didef('request',  '\Top\Quality\Request');
+	_didef('response', '\Top\Quality\Response');
+
 	class MyController {
 
 		public function __construct($request, $response) {
-			echo get_class($request);  // whatever you setup in _didef('request', ....);
+			echo get_class($request);  // 'Top\Quality\Request';
 		}
 	}
 ```
