@@ -34,11 +34,11 @@ Things
 =====
 In Metro DI you name your dependencies with the DI def function.  An undefined thing will return a prototype object that logs all method calls used against it via the magic \_\_call.
 ```php
-	$cart = _get('shoppingCartService');
+	$cart = _make('shoppingCartService');
 	echo( get_class($cart) );  //  Metrodi_Proto
 
 	_didef('shoppingCartService', 'path/to/my/cart.php');
-	$cart = _get('shoppingCartService');
+	$cart = _make('shoppingCartService');
 	echo( get_class($cart) );  //  Path_To_My_Cart
 ```
 
