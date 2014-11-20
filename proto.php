@@ -14,7 +14,7 @@ class Metrodi_Proto {
 	 */
 	public function __call($name, $args) {
 		//only show proto messages in dev mode
-		if (associate_get('env') != 'dev') {
+		if (_get('env') != 'dev') {
 			return;
 		}
 		$bt = debug_backtrace();
