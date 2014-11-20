@@ -63,7 +63,7 @@ Some other languages don't have the benefit of being typeless.  Using the name o
 
 
 Passing Parameters
-====================
+==================
 You can pass parameters both when defining an object and when making an object.
 
 ```php
@@ -86,4 +86,44 @@ You can pass parameters both when defining an object and when making an object.
 	echo $cart2->idUser;     // 'C'
 	echo $cart2->listItems;  // 'D'
 	echo $cart2->timestamp;  // 1234567890  (YMMV)
+```
+
+Singletons
+==========
+Singletons and new objects can both be access with \_make() but it depends on how you use \_make() with \_didef().
+
+```php
+   _didef('singletonService', '\ns\locator\class', 'arg1', 'arg2');
+
+   //later
+   $ss1 = _make('singletonService');
+
+   //same reference
+   $ss2 = _make('singletonService');
+```
+
+If your object is not inherently a service and needs new constructor params everytime you make it, you can pass
+constructor params for every \_make() call.  Each unique combinations of parameters will be hashed and the resulting
+object will be cached and return on subsequent calls to \_make()
+
+```php
+   _didef('user', '\ns\locator\class');
+
+   //later
+   $u1 = _make('user', 100);
+
+   //new object
+   $u2 = _make('user', 200);
+```
+
+You can combine both methods by supplying parameters to the \_didef() which will be combined and used as defaults to
+subsequent \_make() calls
+
+```php
+   _didef('log', '\ns\locator\class', '/tmp/out.log');
+
+   //later
+   $mainLog = _make('log');
+   
+   $specialLog = _make('log', '/var/log/special.log');
 ```
