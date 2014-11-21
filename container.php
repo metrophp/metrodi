@@ -159,7 +159,7 @@ class Metrodi_Container {
 		$loaded = FALSE;
 		foreach ($this->searchDirs as $_dir) {
 			if(file_exists($_dir.$filesep.$file)) {
-				if(include_once($file)) {
+				if(include_once($_dir.$filesep.$file)) {
 					$loaded = TRUE;
 					break;
 				}
