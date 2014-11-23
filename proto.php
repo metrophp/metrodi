@@ -10,7 +10,7 @@ class Metrodi_Proto {
 
 	/**
 	 * Intercept all function calls so there are no stopping errors.
-	 * in DEV mode (associate_set('env', 'dev')) a trace will be emitted.
+	 * in DEV mode (_set('env', 'dev')) a trace will be emitted.
 	 */
 	public function __call($name, $args) {
 		//only show proto messages in dev mode
