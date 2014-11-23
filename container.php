@@ -197,6 +197,10 @@ class Metrodi_Container {
 		}
 	}
 
+	public function isThingDefined($thing) {
+		return array_key_exists($thing, $this->thingList);
+	}
+
 	public function set($key, $val) {
 		$this->varList[$key] = $val;
 	}
