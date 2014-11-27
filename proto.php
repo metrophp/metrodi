@@ -32,6 +32,10 @@ class Metrodi_Proto {
 		return $this;
 	}
 
+	public function __set($key, $value) {
+		$this->{$key} = $value;
+	}
+
 	public function __toString() {
 		return "Proto object of type: ".$this->thing.PHP_EOL;
 	}
