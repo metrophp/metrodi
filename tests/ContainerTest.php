@@ -22,7 +22,7 @@ class Metrodi_Tests_Container extends PHPUnit_Framework_TestCase {
 	 */
 	public function test_create_new_returns_clone() {
 		_didef('dummyobj', 'tests/dummyobj.txt', 'A', 'B');
-		$obj = _make('dummyobj');
+		$obj  = _make('dummyobj');
 		$obj2 = _makeNew('dummyobj');
 		$this->assertEquals( $obj, $obj2 );
 		$this->assertNotSame( $obj, $obj2 );
@@ -34,7 +34,7 @@ class Metrodi_Tests_Container extends PHPUnit_Framework_TestCase {
 	 */
 	public function test_same_arguments_cache_the_same() {
 		_didef('dummyobj', 'tests/dummyobj.txt', 'A', 'B');
-		$obj = _make('dummyobj');
+		$obj  = _make('dummyobj');
 		$obj2 = _makeNew('dummyobj', 'A', 'B');
 		$this->assertEquals( $obj, $obj2 );
 		$this->assertNotSame( $obj, $obj2 );
