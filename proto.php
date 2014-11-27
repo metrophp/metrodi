@@ -15,16 +15,20 @@ class Metrodi_Proto {
 	public function __call($name, $args) {
 		//only show proto messages in dev mode
 		if (_get('env') != 'dev') {
-			return;
+			return $this;
 		}
 		$bt = debug_backtrace();
+		if (!isset($bt[0]) ||
+		    !array_key_exists('line', $bt[0])) {
+			return $this;
+		}
 		$line = $bt[0]['line'];
 		$file = $bt[0]['file'];
 		$bt = null;
 		$parts = explode(DIRECTORY_SEPARATOR, $file);
 		$fname = array_pop($parts);
 		$file = array_pop($parts).DIRECTORY_SEPARATOR.$fname;
-		var_dump("Called: ".$name." against proto object of type: ".$this->thing." from: ".$file." (".$line.").");
+		echo("Called [".$name."] against proto object of type: ".$this->thing." from: ".$file." (".$line.").\n");
 		return $this;
 	}
 
