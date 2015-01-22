@@ -1,7 +1,7 @@
 <?php
 
-include_once(__DIR__.'/../container.php');
-include_once(__DIR__.'/../proto.php');
+include_once(__DIR__.'/../../container.php');
+include_once(__DIR__.'/../../proto.php');
 
 class Metrodi_Tests_Container extends PHPUnit_Framework_TestCase { 
 

@@ -32,6 +32,18 @@ class Metrodi_Proto {
 		return $this;
 	}
 
+	public function set($key, $value) {
+		$this->{$key} = $value;
+	}
+
+	public function get($key, $value=NULL) {
+		if (isset($this->{$key})) {
+			return $this->{$key};
+		}
+		return NULL;
+	}
+
+
 	public function __set($key, $value) {
 		$this->{$key} = $value;
 	}
