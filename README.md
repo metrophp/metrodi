@@ -127,3 +127,30 @@ subsequent \_make() calls
    
    $specialLog = _make('log', '/var/log/special.log');
 ```
+
+
+Closures
+=========
+Closures or any callbacks can be passed as the definition of any things as of 3.1.0.
+
+```php
+    _didef('connection', function($c) {
+	    return new \Ns\Connection($c['username'], $c['password']);
+    });
+
+	$c = _make('connection', array('bob', 'secret');
+```
+
+The result of the anonymous function will be return from \_make instead of the function object.  This behavior defaults
+to behaving like a singleton where repeated calls to \_make('connection') will return the same object.
+
+To get a new reference and have the anonymous function invoked again, use \_makeNew()
+
+```php
+    _didef('connection', function($c) {
+	    return new \Ns\Connection($c['username'], $c['password']);
+    });
+
+	$c  = _make('connection', array('bob', 'secret');
+	$c2 = _makeNew('connection', array('alice', 'secret2');
+```
