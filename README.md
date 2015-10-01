@@ -135,10 +135,10 @@ Closures or any callbacks can be passed as the definition of any things as of 3.
 
 ```php
     _didef('connection', function($c) {
-	    return new \Ns\Connection($c['username'], $c['password']);
+       return new \Ns\Connection($c['username'], $c['password']);
     });
 
-	$c = _make('connection', array('bob', 'secret');
+   $c = _make('connection', array('bob', 'secret');
 ```
 
 The result of the anonymous function will be return from \_make instead of the function object.  This behavior defaults
@@ -148,9 +148,35 @@ To get a new reference and have the anonymous function invoked again, use \_make
 
 ```php
     _didef('connection', function($c) {
-	    return new \Ns\Connection($c['username'], $c['password']);
+        return new \Ns\Connection($c['username'], $c['password']);
     });
 
-	$c  = _make('connection', array('bob', 'secret');
-	$c2 = _makeNew('connection', array('alice', 'secret2');
+    $c  = _make('connection', array('bob', 'secret');
+    $c2 = _makeNew('connection', array('alice', 'secret2');
 ```
+
+
+Service Providers
+=================
+When you are making a thing from a class that defines public class variables and one of those variable names ends in
+'Service', the dependency injector will automatically inject a lazy loading object for that service onto the object's variable.
+
+
+```php
+    class EmailService {
+        public function send() {
+            print "Sending...\n";
+        }
+    }
+
+    class Controller {
+        public $emailService;
+    }
+
+    _didef('controller', 'Controller');
+    _didef('emailService', new EmailService());
+
+    $c  = _make('controller');
+    $c->emailService->send();
+```
+
