@@ -40,7 +40,7 @@ class Metrodi_Proto {
 		if (isset($this->{$key})) {
 			return $this->{$key};
 		}
-		return NULL;
+		return $value;
 	}
 
 
