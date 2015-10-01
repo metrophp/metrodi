@@ -65,18 +65,18 @@ class Metrodi_Container {
 	 * Return a defined thing or an empty object (Metrodi_Proto)
 	 * @return object  defined thing or empty object (Metrodi_Proto)
 	 */
-	public function & make($thing) {
+	public function & make($thing, $singleton=TRUE) {
 		if (!isset($this->thingList[$thing])) {
 			$this->thingList[$thing] = 'StdClass';
 		}
-		if (is_object($this->thingList[$thing])) {
+
+		//closures and anon funcs are objects of type/class Closure
+		if (is_object($this->thingList[$thing]) && !is_callable($this->thingList[$thing])) {
 			return $this->thingList[$thing];
 		}
 
-		$filesep = '/';
-		$file = $this->thingList[$thing];
-
 		$args = func_get_args();
+		array_shift($args);
 		array_shift($args);
 
 		if (!count($args) && isset($this->thingArgList[$thing])) {
@@ -84,15 +84,45 @@ class Metrodi_Container {
 		}
 		if (!count($args)) {
 			$args = NULL;
-			$cachekey = $file.':'.$thing;
+			$cachekey = $thing;
 		} else {
-			$cachekey = $file.':'.$thing.':'.sha1(serialize($args));
+			$cachekey = $thing.':'.sha1(serialize($args));
 		}
 
-		if (!$this->loadAndCache($file, $cachekey, $args))
-			$this->objectCache[$cachekey] = new Metrodi_Proto($thing);
+		if ( $singleton && isset($this->objectCache[$cachekey]) ) {
+			return $this->objectCache[$cachekey];
+		}
 
-		return $this->objectCache[$cachekey];
+		$result = NULL;
+		if (is_callable($this->thingList[$thing])) {
+			if ($args === NULL) {
+				$result = $this->thingList[$thing]->__invoke();
+			} else {
+				$result = call_user_func_array( array($this->thingList[$thing], '__invoke'), $args);
+			}
+		}
+
+		//TODO: refactor into file loading, class loading, and invokables
+
+		//this should be a filename that resolves to a classname
+		$file = $this->thingList[$thing];
+		if (!$result) {
+			if ($singleton) {
+				$result = $this->loadAndCache($file, $cachekey, $args);
+			} else {
+				//always make new object when not $singleton
+				$result = $this->load($file, $args);
+			}
+		}
+		//we got FALSE from load or loadAndCache
+		if (!$result) {
+			$result = new Metrodi_Proto($thing);
+		}
+
+		if ($singleton && !isset($this->objectCache[$cachekey])) {
+			$this->objectCache[$cachekey] = $result;
+		}
+		return $result;
 	}
 
 	/**
@@ -102,9 +132,12 @@ class Metrodi_Container {
 	public function makeNew($thing) {
 		$args = func_get_args();
 		if (count($args) <= 1) {
-			return clone $this->make($thing);
+			return $this->make($thing, FALSE);
 		} else {
-			return clone call_user_func_array(array($this, 'make'), $args);
+			$thing = array_shift($args);
+			array_unshift($args, FALSE);
+			array_unshift($args, $thing);
+			return call_user_func_array(array($this, 'make'), $args);
 		}
 	}
 
@@ -116,8 +149,45 @@ class Metrodi_Container {
 	 */
 	public function loadAndCache($file, $cachekey, $args=NULL) {
 		if (isset($this->objectCache[$cachekey])) {
-			return TRUE;
+			return $this->objectCache[$cachekey];
 		}
+		//if something is undefined, its 'file' in the thingList is set to StdClass
+		if ($file === 'StdClass') return FALSE;
+
+		//try file loading only if it looks like a file.
+		//if $file is actually a classname (no dots)
+		//then it will just be returned into $className
+		$className = $this->tryFileLoading($file);
+
+		//$file looked like a file, but couldn't include it
+		if ($className === FALSE) {
+			return FALSE;
+		}
+
+		if (is_array($args) && class_exists('ReflectionClass', FALSE)) {
+			$refl = new ReflectionClass($className);
+			try {
+				//invoke lazy loading promises
+				foreach ($args as $_argk => $_argv) {
+					if (is_object($_argv) && method_exists($_argv, '__invoke')) {
+						$args[ $_argk ] = $_argv();
+					}
+				}
+				$_x = $refl->newInstanceArgs($args);
+			} catch (ReflectionException $e) {
+				$_x = $refl->newInstance();
+			}
+		} else {
+			$_x = new $className;
+		}
+		$this->attachServices($_x);
+
+		$this->objectCache[$cachekey] = $_x;
+		return $_x;
+	}
+
+
+	public function load($file, $args=NULL) {
 		//if something is undefined, its 'file' in the thingList is set to StdClass
 		if ($file === 'StdClass') return FALSE;
 
@@ -149,8 +219,7 @@ class Metrodi_Container {
 		}
 		$this->attachServices($_x);
 
-		$this->objectCache[$cachekey] = $_x;
-		return TRUE;
+		return $_x;
 	}
 
 	/**
@@ -242,6 +311,9 @@ function _make($thing) {
 	if (count($args) <= 1) {
 		return $a->make($thing);
 	} else {
+		$thing = array_shift($args);
+		array_unshift($args, TRUE);
+		array_unshift($args, $thing);
 		return call_user_func_array(array($a, 'make'), $args);
 	}
 	return $a->make($thing);
