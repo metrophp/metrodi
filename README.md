@@ -9,7 +9,7 @@ tl;dr
   - Doesn't rely on autoloading
   - Checks parameter names first
   - Does actually use class types, but only after checking parameter names
-  - Auto injects any public member variable ending in 'Service'
+  - Auto injects any public class variable ending in 'Service'
 
 Setup
 =====
