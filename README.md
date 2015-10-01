@@ -163,7 +163,7 @@ When you are making a thing from a class that defines public class variables and
 
 
 ```php
-    class EmailService {
+    class NullMailer {
         public function send() {
             print "Sending...\n";
         }
@@ -174,7 +174,7 @@ When you are making a thing from a class that defines public class variables and
     }
 
     _didef('controller', 'Controller');
-    _didef('emailService', new EmailService());
+    _didef('emailService', new NullMailer());
 
     $c  = _make('controller');
     $c->emailService->send();
