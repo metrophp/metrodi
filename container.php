@@ -74,7 +74,6 @@ class Metrodi_Container {
 		}
 
 		$filesep = '/';
-		$objList = array();
 		$file = $this->thingList[$thing];
 
 		$args = func_get_args();
