@@ -132,11 +132,11 @@ bypasses any instance cache and proceeds to make a new object the same way it do
 
 ```php
 
-   _didef('log', '\ns\locator\class', '/tmp/out.log');
+   _didef('user', '\ns\user');
 
    //later
-   $mainLog    = _make('log');
-   $anotherLog = _makeNew('log'); //different instance, same parameters
+   $user1 = _make('user');
+   $user2 = _makeNew('user'); //different instance
 ```
 
 
