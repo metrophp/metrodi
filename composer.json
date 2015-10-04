@@ -1,11 +1,11 @@
 {
-    "name": "metrodi",
-    "version": "3.0.0",
+    "name": "metrophp/metrodi",
+    "version": "3.1.1",
     "license": "MIT",
     "authors": [
         {
             "name": "Mark Kimsal",
-            "email": "mark.kimsal@fire-engine-red.com"
+            "email": "mark.kimsal@igotaprinter.com"
         }
     ]
 }
