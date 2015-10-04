@@ -123,9 +123,20 @@ subsequent \_make() calls
    _didef('log', '\ns\locator\class', '/tmp/out.log');
 
    //later
-   $mainLog = _make('log');
-   
+   $mainLog    = _make('log');
    $specialLog = _make('log', '/var/log/special.log');
+```
+
+The \_makeNew() function will always return a new instance of a class definition regardless of parameters passed.  It simply
+bypasses any instance cache and proceeds to make a new object the same way it does the very first time \_make() is called.
+
+```php
+
+   _didef('log', '\ns\locator\class', '/tmp/out.log');
+
+   //later
+   $mainLog    = _make('log');
+   $anotherLog = _makeNew('log'); //different instance, same parameters
 ```
 
 
