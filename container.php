@@ -82,15 +82,17 @@ class Metrodi_Container {
 		if (!count($args) && isset($this->thingArgList[$thing])) {
 			$args = $this->thingArgList[$thing];
 		}
-		if (!count($args)) {
-			$args = NULL;
-			$cachekey = $thing;
-		} else {
-			$cachekey = $thing.':'.sha1(serialize($args));
-		}
+		if ($singleton) {
+			if (!count($args)) {
+				$args = NULL;
+				$cachekey = $thing;
+			} else {
+				$cachekey = $thing.':'.sha1(serialize($args));
+			}
 
-		if ( $singleton && isset($this->objectCache[$cachekey]) ) {
-			return $this->objectCache[$cachekey];
+			if ( $singleton && isset($this->objectCache[$cachekey]) ) {
+				return $this->objectCache[$cachekey];
+			}
 		}
 
 		$result = NULL;
@@ -148,41 +150,16 @@ class Metrodi_Container {
 	 * @return  Boolean True if file was loaded and saved
 	 */
 	public function loadAndCache($file, $cachekey, $args=NULL) {
+	/*
 		if (isset($this->objectCache[$cachekey])) {
 			return $this->objectCache[$cachekey];
 		}
-		//if something is undefined, its 'file' in the thingList is set to StdClass
-		if ($file === 'StdClass') return FALSE;
+		*/
 
-		//try file loading only if it looks like a file.
-		//if $file is actually a classname (no dots)
-		//then it will just be returned into $className
-		$className = $this->tryFileLoading($file);
-
-		//$file looked like a file, but couldn't include it
-		if ($className === FALSE) {
-			return FALSE;
+		$_x = $this->load($file, $args);
+		if ($_x !== FALSE) {
+			$this->objectCache[$cachekey] = $_x;
 		}
-
-		if (is_array($args) && class_exists('ReflectionClass', FALSE)) {
-			$refl = new ReflectionClass($className);
-			try {
-				//invoke lazy loading promises
-				foreach ($args as $_argk => $_argv) {
-					if (is_object($_argv) && method_exists($_argv, '__invoke')) {
-						$args[ $_argk ] = $_argv();
-					}
-				}
-				$_x = $refl->newInstanceArgs($args);
-			} catch (ReflectionException $e) {
-				$_x = $refl->newInstance();
-			}
-		} else {
-			$_x = new $className;
-		}
-		$this->attachServices($_x);
-
-		$this->objectCache[$cachekey] = $_x;
 		return $_x;
 	}
 
