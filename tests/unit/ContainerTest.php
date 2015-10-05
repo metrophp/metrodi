@@ -6,6 +6,24 @@ include_once(__DIR__.'/../../proto.php');
 class Metrodi_Tests_Container extends PHPUnit_Framework_TestCase { 
 
 	/**
+	 */
+	public function test_cache_returns_same_object() {
+		_didef('cacheobj', 'tests/dummyobj.txt', 'A', 'B');
+		$obj1 = _make('dummyobj');
+		$obj2 = _make('dummyobj');
+		$this->assertSame( $obj1, $obj2 );
+	}
+
+	/**
+	 */
+	public function test_invokables_as_argumens() {
+		_didef('dummyobj', 'tests/dummyobj.txt', 'A');
+		$obj = _makeNew('dummyobj', 'A', function() { return 'B';});
+		$this->assertEquals( 'A', $obj->request );
+		$this->assertEquals( 'B', $obj->response );
+	}
+
+	/**
 	 * Ensure you can pass any arguments during 
 	 * object creation time
 	 */
@@ -37,8 +55,18 @@ class Metrodi_Tests_Container extends PHPUnit_Framework_TestCase {
 		_didef('dummyobj', 'tests/dummyobj.txt', 'A', 'B');
 		$obj  = _make('dummyobj');
 		$obj2 = _makeNew('dummyobj', 'A', 'B');
-//		$this->assertEquals( $obj, $obj2 );
 		$this->assertNotSame( $obj, $obj2 );
+	}
+
+	/**
+	 */
+	public function test_instances_are_returned_as_defined() {
+		$inst = (object)array();
+		$inst->a = 'A';
+		$inst->b = 'B';
+		_didef('instobj', $inst);
+		$obj  = _make('instobj');
+		$this->assertSame( $obj, $inst );
 	}
 
 	/**
@@ -67,6 +95,15 @@ class Metrodi_Tests_Container extends PHPUnit_Framework_TestCase {
 		$obj = _make('undef');
 		$this->assertEquals( 'metrodi_proto', strtolower( get_class($obj) ) );
 	}
+
+	/**
+	 */
+	public function test_broken_file_definitions_return_proto() {
+		_didef('broken', 'q.php');
+		$obj = _make('broken');
+		$this->assertEquals( 'metrodi_proto', strtolower( get_class($obj) ) );
+	}
+
 
 	/**
 	 */
