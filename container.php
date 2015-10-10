@@ -211,6 +211,10 @@ class Metrodi_Container {
 		if (strrpos($locator, '.') === FALSE) {
 			return $locator;
 		}
+		$className =  $this->formatClassName($locator);
+		if (class_exists($className)) {
+			return $className;
+		}
 
 		$filesep = '/';
 		$loaded = FALSE;
@@ -226,7 +230,7 @@ class Metrodi_Container {
 		if (!$loaded) {
 			return FALSE;
 		}
-		return $this->formatClassName($locator);
+		return $className;
 	}
 
 	/**
