@@ -150,11 +150,9 @@ class Metrodi_Container {
 	 * @return  Boolean True if file was loaded and saved
 	 */
 	public function loadAndCache($file, $cachekey, $args=NULL) {
-	/*
 		if (isset($this->objectCache[$cachekey])) {
 			return $this->objectCache[$cachekey];
 		}
-		*/
 
 		$_x = $this->load($file, $args);
 		if ($_x !== FALSE) {
