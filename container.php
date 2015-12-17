@@ -18,7 +18,7 @@ class Metrodi_Container {
 		// we need to set include path. for exception lifecycle
 		// root/vendor/metrophp/metrodi/container.php
 		set_include_path(
-			get_include_path().':'.dirname(dirname(dirname(dirname(__FILE__))))
+			get_include_path().':'.realpath($root)
 		);
 
 		$this->rootDir = $root;
