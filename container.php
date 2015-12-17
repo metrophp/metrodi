@@ -28,9 +28,9 @@ class Metrodi_Container {
 		self::$container = $this;
 	}
 
-	static public function &getContainer() {
+	static public function &getContainer($root='.', $dirs=NULL) {
 		if (self::$container == NULL) {
-			self::$container = new Metrodi_Container();
+			self::$container = new Metrodi_Container($root, $dirs);
 		}
 		return self::$container;
 	}
