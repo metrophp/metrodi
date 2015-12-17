@@ -216,8 +216,9 @@ class Metrodi_Container {
 
 		$filesep = '/';
 		$loaded = FALSE;
+
 		foreach ($this->searchDirs as $_dir) {
-			$file = $_dir.$filesep.$locator;
+			$file = $this->rootDir.$filesep.$_dir.$filesep.$locator;
 			if(file_exists($file)) {
 				if(include_once($file)) {
 					$loaded = TRUE;
