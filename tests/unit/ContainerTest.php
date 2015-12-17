@@ -92,7 +92,7 @@ class Metrodi_Tests_Container extends PHPUnit_Framework_TestCase {
 	/**
 	 */
 	public function test_repeated_loadAndCache_to_make_return_same_reference() {
-		$container = new Metrodi_Container( array('.', '../../') );
+		$container = new Metrodi_Container('.', array('.', '../../') );
 		$obj1 = $container->loadAndCache('tests/dummyobj.txt', 'tests/dummyobj.txt');
 		$obj2 = $container->loadAndCache('tests/dummyobj.txt', 'tests/dummyobj.txt');
 		$this->assertSame( $obj1, $obj2 );
