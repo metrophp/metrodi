@@ -67,7 +67,7 @@ class Metrodi_Container {
 	 */
 	public function & make($thing, $singleton=TRUE) {
 		if (!isset($this->thingList[$thing])) {
-			$this->thingList[$thing] = 'StdClass';
+			$this->thingList[$thing] = $thing;
 		}
 
 		//closures and anon funcs are objects of type/class Closure
@@ -162,10 +162,14 @@ class Metrodi_Container {
 	}
 
 
+	/**
+	 * This class tries to load something defined by $file
+	 * If $file is a filename, a className will be generated.
+	 * If $file is a className, it will be created with reflection
+	 * If $file is not a filename, and not a classname, it will be
+	 * loaded as a Metrodi_Proto class.
+	 */
 	public function load($file, $args=NULL) {
-		//if something is undefined, its 'file' in the thingList is set to StdClass
-		if ($file === 'StdClass') return FALSE;
-
 		//try file loading only if it looks like a file.
 		//if $file is actually a classname (no dots)
 		//then it will just be returned into $className
@@ -190,7 +194,11 @@ class Metrodi_Container {
 				$_x = $refl->newInstance();
 			}
 		} else {
-			$_x = new $className;
+			if (!class_exists($className)) {
+				$_x = new Metrodi_Proto($file);
+			} else {
+				$_x = new $className;
+			}
 		}
 		$this->attachServices($_x);
 
@@ -209,7 +217,7 @@ class Metrodi_Container {
 		if (strrpos($locator, '.') === FALSE) {
 			return $locator;
 		}
-		$className =  $this->formatClassName($locator);
+		$className = $this->formatClassName($locator);
 		if (class_exists($className)) {
 			return $className;
 		}
