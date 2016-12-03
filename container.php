@@ -82,6 +82,9 @@ class Metrodi_Container {
 		if (!count($args) && isset($this->thingArgList[$thing])) {
 			$args = $this->thingArgList[$thing];
 		}
+		if (!count($args)) {
+			$args = NULL;
+		}
 		if ($singleton) {
 			if (!count($args)) {
 				$args = NULL;
@@ -181,8 +184,8 @@ class Metrodi_Container {
 		}
 
 		if (is_array($args) && class_exists('ReflectionClass', false)) {
-			$refl = new ReflectionClass($className);
 			try {
+				$refl = new ReflectionClass($className);
 				//invoke lazy loading promises
 				foreach ($args as $_argk => $_argv) {
 					if (is_object($_argv) && method_exists($_argv, '__invoke')) {
@@ -191,7 +194,11 @@ class Metrodi_Container {
 				}
 				$_x = $refl->newInstanceArgs($args);
 			} catch (ReflectionException $e) {
-				$_x = $refl->newInstance();
+				if (!class_exists($className)) {
+					$_x = new Metrodi_Proto($file);
+				} else {
+					$_x = $refl->newInstance();
+				}
 			}
 		} else {
 			if (!class_exists($className)) {
