@@ -51,6 +51,10 @@ class Metrodi_Container {
 		}
 	}
 
+	public function isdidef($thing) {
+		return array_key_exists($thing, $this->thingList);
+	}
+
 	/**
 	 * Return a Metrodi_Promise, which returns
 	 * the desired instance when __invoked()
@@ -297,6 +301,16 @@ function _didef($thing, $file) {
 		return $a->didef($thing, $file);
 	} else {
 		return call_user_func_array(array($a, 'didef'), $args);
+	}
+}
+
+function _isdidef($thing) {
+	$a = Metrodi_Container::getContainer();
+	$args = func_get_args();
+	if (count($args) <= 1) {
+		return $a->isdidef($thing);
+	} else {
+		return call_user_func_array(array($a, 'isdidef'), $args);
 	}
 }
 
