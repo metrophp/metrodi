@@ -90,7 +90,7 @@ class Metrodi_Container {
 			$args = NULL;
 		}
 		if ($singleton) {
-			if (!count($args)) {
+			if (!@count($args)) {
 				$args = NULL;
 				$cachekey = $thing;
 			} else {
